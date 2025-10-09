@@ -1,7 +1,7 @@
 {
   "name": "cripto-bot",
   "version": "1.0.0",
-  "description": "",
+  "description": "Um bot simples para monitoramento e operação automática no mercado de criptomoedas, desenvolvido em **Node.js** com **Axios** e integração à **Binance Testnet API**.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -11,6 +11,15 @@
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
-    "axios": "^1.12.2"
-  }
+    "axios": "^1.12.2",
+    "dotenv": "^17.2.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MarcoTSF/Cripto-Bot.git"
+  },
+  "bugs": {
+    "url": "https://github.com/MarcoTSF/Cripto-Bot/issues"
+  },
+  "homepage": "https://github.com/MarcoTSF/Cripto-Bot#readme"
 }

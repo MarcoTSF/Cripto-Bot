@@ -3,3 +3,4 @@ node_modules/
 
 # Ambiente
 .env
+state.json

@@ -155,33 +155,67 @@ async function runStrategy(state) {
         const gain = price / state.entryPrice;
         const bearish = lastEMAshort < lastEMAlong && lastRSI && lastRSI > 30;
 
-        if (gain <= config.STOP_LOSS) {
-            log(`❌ STOP LOSS atingido (${(gain * 100 - 100).toFixed(2)}%)`);
+        // Calcula preços de alvo e stop
+        const takeProfitPrice = state.entryPrice * config.TAKE_PROFIT;
+        let stopLossPrice = state.entryPrice * config.STOP_LOSS;
+
+        // ===== Ajuste dinâmico do stop =====
+        // Calcula o progresso percentual em relação ao alvo
+        const targetDistance = takeProfitPrice - state.entryPrice;
+        const currentGain = price - state.entryPrice;
+        const progress = (currentGain / targetDistance) * 100;
+
+        if (progress >= 50 && progress < 80 && !state.movedStopToZero) {
+            stopLossPrice = state.entryPrice; // move stop pro zero a zero
+            state.movedStopToZero = true;
+            log("🟡 Stop loss movido para o zero a zero (50% do alvo atingido)");
+        } 
+        else if (progress >= 80 && !state.movedStopToPartial) {
+            stopLossPrice = state.entryPrice + targetDistance * 0.3; // 30% do alvo
+            state.movedStopToPartial = true;
+            log("🟢 Stop loss ajustado para 30% do alvo (80% do alvo atingido)");
+        }
+
+        // ===== Condições de fechamento =====
+        if (price <= stopLossPrice) {
+            log(`❌ STOP LOSS executado em ${stopLossPrice.toFixed(2)} (ajustado dinamicamente)`);
             await newOrder(config.SYMBOL, config.QUANTITY, "SELL");
             recordTrade("SELL", state.entryPrice, price, parseFloat(config.QUANTITY), config.SYMBOL);
             state.isOpened = false;
             state.entryPrice = 0;
+            state.movedStopToZero = false;
+            state.movedStopToPartial = false;
             state.lastTradeTime = now;
             saveState(state);
-        } else if (gain >= config.TAKE_PROFIT) {
+        }
+        else if (gain >= config.TAKE_PROFIT) {
             log(`✅ TAKE PROFIT atingido (${(gain * 100 - 100).toFixed(2)}%)`);
             await newOrder(config.SYMBOL, config.QUANTITY, "SELL");
             recordTrade("SELL", state.entryPrice, price, parseFloat(config.QUANTITY), config.SYMBOL);
             state.isOpened = false;
             state.entryPrice = 0;
+            state.movedStopToZero = false;
+            state.movedStopToPartial = false;
             state.lastTradeTime = now;
             saveState(state);
-        } else if (bearish && price >= sma * config.SELL_THRESHOLD) {
+        } 
+        else if (bearish && price >= sma * config.SELL_THRESHOLD) {
             log("📉 Sinal de VENDA confirmado (EMA + RSI + SMA)");
             await newOrder(config.SYMBOL, config.QUANTITY, "SELL");
             recordTrade("SELL", state.entryPrice, price, parseFloat(config.QUANTITY), config.SYMBOL);
             state.isOpened = false;
             state.entryPrice = 0;
+            state.movedStopToZero = false;
+            state.movedStopToPartial = false;
             state.lastTradeTime = now;
             saveState(state);
-        } else {
+        } 
+        else {
             log("⏳ Aguardando sinal de venda ou take profit...");
         }
+    }
+    else {
+        log("⏳ Aguardando sinal de compra...");
     }
 }
 

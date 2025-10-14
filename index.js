@@ -43,19 +43,23 @@ rl.question("👉 Digite 1 ou 2 e pressione [Enter]: ", async (answer) => {
 
     let runStrategy;
 
+    function reloadModule(modulePath) {
+        delete require.cache[require.resolve(modulePath)];
+        return require(modulePath);
+    }
+
     if (answer === "1") {
         console.log("\n🚀 Iniciando em modo SPOT...");
         process.env.DEFAULT_MODE = "spot";
-        const { runStrategy: spotStrategy } = require("./modules/bot/strategy");
+        reloadModule("./modules/bot/config/config");
+        const { runStrategy: spotStrategy } = reloadModule("./modules/bot/strategies/strategy_spot");
         runStrategy = spotStrategy;
     } else if (answer === "2") {
         console.log("\n🧪 Iniciando em modo FUTURES...");
         process.env.DEFAULT_MODE = "futures";
-        const { runStrategy: futuresStrategy } = require("./modules/bot/strategies/strategy_futures");
+        reloadModule("./modules/bot/config/config");
+        const { runStrategy: futuresStrategy } = reloadModule("./modules/bot/strategies/strategy_futures");
         runStrategy = futuresStrategy;
-    } else {
-        console.log("❌ Opção inválida. Encerrando execução.");
-        process.exit(0);
     }
 
     // Execução contínua

@@ -125,8 +125,8 @@ async function runStrategy(state) {
     // Abertura de posição
     // =======================
     if (!state.isOpened) {
-        const bullish = lastEMAshort > lastEMAlong && lastRSI < 70 && price <= sma * config.BUY_THRESHOLD;
-        const bearish = lastEMAshort < lastEMAlong && lastRSI > 30 && price >= sma * config.SELL_THRESHOLD;
+        const bullish = lastEMAshort > lastEMAlong && lastRSI < 75 && price <= sma * config.BUY_THRESHOLD;
+        const bearish = lastEMAshort < lastEMAlong && lastRSI > 25 && price >= sma * config.SELL_THRESHOLD;
 
         if (bullish) {
             log("📈 Sinal de COMPRA (LONG) detectado");

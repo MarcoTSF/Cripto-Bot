@@ -136,6 +136,44 @@ O projeto está em constante evolução, com novas funcionalidades e melhorias s
 
 ---
 
+## ⚙️ Configurações Avançadas
+
+Os parâmetros abaixo podem ser ajustados diretamente no arquivo:
+📄 modules/bot/config/config.js (ou via variáveis de ambiente).
+
+Eles determinam a sensibilidade e o comportamento do bot nas operações.
+
+| Parâmetro        | Descrição                                                               | Valor padrão                      |
+| ---------------- | ----------------------------------------------------------------------- | --------------------------------- |
+| `BUY_THRESHOLD`  | Define o quão abaixo da média o preço precisa estar para o bot comprar. | `0.995` *(= -0.5% abaixo da SMA)* |
+| `SELL_THRESHOLD` | Define o quão acima da média o preço precisa estar para sinal de venda. | `1.005` *(= +0.5% acima da SMA)*  |
+| `STOP_LOSS`      | Percentual de perda máxima antes de encerrar a posição.                 | `0.98` *(= -2% de perda)*         |
+| `TAKE_PROFIT`    | Percentual de ganho para encerrar automaticamente com lucro.            | `1.05` *(= +5% de lucro)*         |
+| `CHECK_INTERVAL` | Intervalo (em milissegundos) entre verificações de sinal.               | `10000` *(= 10 segundos)*         |
+| `INTERVAL`       | Tempo de cada candle usado na análise.                                  | `"15m"` *(15 minutos)*            |
+
+---
+
+## 💡 Exemplo de setups práticos
+
+| Perfil             | BUY_THRESHOLD | SELL_THRESHOLD | STOP_LOSS | TAKE_PROFIT | Descrição                                                                 |
+| :----------------- | :------------ | :------------- | :-------- | :---------- | :------------------------------------------------------------------------ |
+| 🟩 **Conservador** | `0.997`       | `1.003`        | `0.99`    | `1.02`      | Garante segurança e poucos trades. Menor lucro, menor risco.              |
+| 🟨 **Moderado**    | `0.995`       | `1.005`        | `0.98`    | `1.05`      | Balanceado: bom entre frequência e segurança. *(recomendado para início)* |
+| 🟥 **Agressivo**   | `0.99`        | `1.01`         | `0.97`    | `1.08`      | Opera com alta frequência e maior risco de perda. Busca picos rápidos.    |
+
+---
+
+## 📊 Recomendações
+
+- Testar sempre na Testnet antes de usar no mercado real (USE_TESTNET=true).
+
+- Registrar seus resultados para entender qual setup se adapta melhor ao par operado.
+
+- Não misturar estratégias agressivas com saldos altos.
+
+---
+
 ## 🧑‍💻 Autor
 
 ### [Marco Túlio Salvador Filho](https://github.com/MarcoTSF)
